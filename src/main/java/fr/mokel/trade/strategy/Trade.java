@@ -32,6 +32,8 @@ public class Trade {
 		return exit;
 	}
 
-	
+	public DayValue getPerfoAsDayValue() {
+		return new DayValue(getPerformance(), exit.getDate());
+	}
 	
 }
