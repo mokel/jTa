@@ -149,4 +149,8 @@ public class WindowedList implements Iterable<DayValue> {
 		data.add(value);
 		to = data.size() - 1;
 	}
+	
+	public List<DayValue> getUnderlyingList() {
+		return data;
+	}
 }

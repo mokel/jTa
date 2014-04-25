@@ -1,6 +1,8 @@
 package fr.mokel.trade.model;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 public class DayValue {
 
@@ -28,6 +30,9 @@ public class DayValue {
 
 	public LocalDate getDate() {
 		return date;
+	}
+	public Date getJavaUtilDate() {
+		return Date.from(date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 	}
 
 	public void setDate(LocalDate date) {

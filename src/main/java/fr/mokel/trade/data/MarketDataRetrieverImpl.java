@@ -29,7 +29,7 @@ import fr.mokel.trade.model.WindowedList;
 public class MarketDataRetrieverImpl extends Observable implements
 		IMarketDataRetriever {
 
-	private static final int NB_MONTHS = 96;
+	private static final int NB_MONTHS = 24;
 
 	protected static Properties props = new Properties();
 	private static Logger logger = Logger

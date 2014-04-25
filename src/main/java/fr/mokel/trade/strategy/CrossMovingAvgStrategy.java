@@ -9,12 +9,8 @@ public class CrossMovingAvgStrategy extends Strategy2 {
 	private DayValue today;
 	private DayValue yesterday;
 	
-	private CrossMovingAvgParamters params = new CrossMovingAvgParamters();
+	private CrossMovingAvgParamters params;
 	
-	@Override
-	StrategyType getType() {
-		return StrategyType.MACD;
-	}
 	@Override
 	boolean checkDataLength() {
 		return getDataSize() >= params.getLongSMALength();
@@ -41,14 +37,21 @@ public class CrossMovingAvgStrategy extends Strategy2 {
 		}
 		return yesterday.getValue() <= 0 && today.getValue() > 0;
 	}
-	@Override
-	void analyse(DayValue dayValue, WindowedList list) {
-		yesterday = today;
-		today = new CrossMovingAverageIndicator().process(list, params.getShortSMALength(), params.getLongSMALength());
-	}
 	
 	int getDataWindowLength() {
 		 return params.getLongSMALength();
+	}
+	
+	
+	@Override
+	void analyse(DayValue dayValue, WindowedList windowedList,
+			int stockListIndex) {
+		yesterday = today;
+		today = new CrossMovingAverageIndicator().process(windowedList, params.getShortSMALength(), params.getLongSMALength());
+	}
+	@Override
+	public void setParameters(StrategyParamters params) {
+		this.params = (CrossMovingAvgParamters) params;
 	}
 
 }
