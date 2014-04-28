@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import fr.mokel.trade.data.MarketDataRetrieverImpl;
-import fr.mokel.trade.gui.graph.PerformanceChart;
+import fr.mokel.trade.gui2.PerformanceChart;
 import fr.mokel.trade.model.DayValue;
 import fr.mokel.trade.model.Stock;
 import fr.mokel.trade.model.WindowedList;
@@ -22,7 +22,7 @@ public class Run {
 //http://stackoverflow.com/questions/6337851/jfreechart-general-issue-on-the-possibility-of-interactlively-modify-a-displayed
 	public static void main(String[] args) {
 		MarketDataRetrieverImpl m = new MarketDataRetrieverImpl();
-		WindowedList c = m.getDayData("ALU.PA", LocalDate.now());
+		WindowedList c = m.getDayData("BNP.PA", LocalDate.now());
 		Stock aca = new Stock("BNP.PA");
 		aca.setList(c);
 		PerformanceChart pc = new PerformanceChart();
