@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Observer;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,37 +24,51 @@ import au.com.bytecode.opencsv.CSVWriter;
 import au.com.bytecode.opencsv.bean.CsvToBean;
 import au.com.bytecode.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 import fr.mokel.trade.model.BarChartData;
-import fr.mokel.trade.model.DataWindow;
 import fr.mokel.trade.model.WindowedList;
 
-public class MarketDataRetrieverImpl extends Observable implements
-		IMarketDataRetriever {
+public class YahooDataRetriever extends Observable implements
+		MarketDataRetriever {
 
-	private static final int NB_MONTHS = 24;
+	private static final int DEFAULT_LENGTH = 24;
+
+	private int nbMonth = DEFAULT_LENGTH;
 
 	protected static Properties props = new Properties();
-	private static Logger logger = Logger
-			.getLogger(MarketDataRetrieverImpl.class);
-	private DataWindow result;
-	private String codeOld;
+	private static Logger logger = Logger.getLogger(YahooDataRetriever.class);
 
-	public MarketDataRetrieverImpl() {
-		MarketDataRetrieverImpl.loadConf();
+	public YahooDataRetriever() {
+		YahooDataRetriever.loadConf();
 	}
 
-	public String getCode() {
-		return codeOld;
+	public int getNbMonth() {
+		return nbMonth;
 	}
 
-	public void setCode(String code) {
-		this.codeOld = code;
+	public void setNbMonth(int nbMonth) {
+		this.nbMonth = nbMonth;
 	}
 
-	public WindowedList getDayData(String code, LocalDate date) {
+	public void getDataAsync(String code, LocalDate date, Observer o) {
+		deleteObservers();
+		addObserver(o);
+		Runnable run = new Runnable() {
+			@Override
+			public void run() {
+				WindowedList result = getData(code, date);
+				setChanged();
+				notifyObservers(result);
+			}
+		};
+		Thread t = new Thread(run);
+		t.start();
+	}
+
+	public WindowedList getData(String code, LocalDate date) {
 		CSVReader read = null;
 		File csv = new File(createFileName(code, date));
 		if (csv.canRead()) {
 			try {
+				logger.debug("Read data from disk");
 				read = new CSVReader(new FileReader(csv));
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -62,16 +77,16 @@ public class MarketDataRetrieverImpl extends Observable implements
 			Retriever ret;
 			String url = createUrl(code, date);
 			logger.info("Fetch: " + url);
-			if (StringUtils.isNotBlank(MarketDataRetrieverImpl.props
+			if (StringUtils.isNotBlank(YahooDataRetriever.props
 					.getProperty("proxy.url"))) {
 				ret = new Retriever(
-						MarketDataRetrieverImpl.props.getProperty("proxy.url"),
+						YahooDataRetriever.props.getProperty("proxy.url"),
 						Integer.valueOf(
-								MarketDataRetrieverImpl.props
+								YahooDataRetriever.props
 										.getProperty("proxy.port")).intValue(),
-						MarketDataRetrieverImpl.props
+						YahooDataRetriever.props
 								.getProperty("proxy.login"),
-						MarketDataRetrieverImpl.props
+						YahooDataRetriever.props
 								.getProperty("proxy.password"), url);
 
 			} else {
@@ -104,7 +119,7 @@ public class MarketDataRetrieverImpl extends Observable implements
 	}
 
 	private String createUrl(String code, LocalDate date) {
-		LocalDate yahooDate = date.minusMonths(NB_MONTHS);
+		LocalDate yahooDate = date.minusMonths(nbMonth);
 		// alt
 		// http://ichart.yahoo.com/table.csv?s=ACA.PA&g=d&a=1&b=1&c=2010&d=3&e=8&f=2014&ignore=.csv
 		StringBuilder sb = new StringBuilder(
@@ -174,12 +189,6 @@ public class MarketDataRetrieverImpl extends Observable implements
 			result.add(toReverse.get(i));
 		}
 		return result;
-	}
-
-	public void run() {
-		// result = getDayData();
-		setChanged();
-		notifyObservers(result);
 	}
 
 }

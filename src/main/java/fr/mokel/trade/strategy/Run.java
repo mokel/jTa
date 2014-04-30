@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import fr.mokel.trade.data.MarketDataRetrieverImpl;
+import fr.mokel.trade.data.YahooDataRetriever;
 import fr.mokel.trade.gui2.PerformanceChart;
 import fr.mokel.trade.model.DayValue;
 import fr.mokel.trade.model.Stock;
@@ -21,8 +21,8 @@ public class Run {
 //http://stackoverflow.com/questions/7206542/jfreechart-interactive-chart-editing-tranforming-mouse-coordinates-into-series
 //http://stackoverflow.com/questions/6337851/jfreechart-general-issue-on-the-possibility-of-interactlively-modify-a-displayed
 	public static void main(String[] args) {
-		MarketDataRetrieverImpl m = new MarketDataRetrieverImpl();
-		WindowedList c = m.getDayData("BNP.PA", LocalDate.now());
+		YahooDataRetriever m = new YahooDataRetriever();
+		WindowedList c = m.getData("BNP.PA", LocalDate.now());
 		Stock aca = new Stock("BNP.PA");
 		aca.setList(c);
 		PerformanceChart pc = new PerformanceChart();

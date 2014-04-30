@@ -2,8 +2,10 @@ package fr.mokel.trade.gui2;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -64,6 +66,7 @@ public class PerformanceChart extends JPanel {
 	public PerformanceChart() {
 		setLayout(new GridBagLayout());
 		plot = new XYPlot();
+		plot.setBackgroundPaint(Color.GRAY);
 		chart = new JFreeChart(plot);
 		// set the background color for the chart...
 		chart.setBackgroundPaint(Color.WHITE);
@@ -120,7 +123,14 @@ public class PerformanceChart extends JPanel {
 		plot.setDomainAxis(axisDate);
 		TimeSeriesCollection stockDs = createDs(stockValues, "Stock");
 		XYAreaRenderer renderer = new XYAreaRenderer();
-		renderer.setBaseFillPaint(Color.BLUE);
+		GradientPaint p = new GradientPaint(new Point(), Color.BLUE,
+				new Point(), new Color(0, 0, 0, 1));
+		p = renderer.getGradientTransformer().transform(p,
+				renderer.getBaseShape());
+		renderer.setSeriesPaint(0, p);
+		// renderer.setSeriesFillPaint(0, Color.BLUE);
+
+		// renderer.setSeriesPaint(0, Color.BLUE);
 		renderer.setBaseToolTipGenerator(new StandardXYToolTipGenerator(
 				StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
 				new SimpleDateFormat("dd-MM-yyyy"), new DecimalFormat(

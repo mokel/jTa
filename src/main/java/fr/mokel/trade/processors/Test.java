@@ -1,14 +1,14 @@
 package fr.mokel.trade.processors;
 
-import fr.mokel.trade.data.IMarketDataRetriever;
+import fr.mokel.trade.data.MarketDataRetriever;
 import fr.mokel.trade.model.Chart;
 
 public class Test {
 
-	private IMarketDataRetriever ret;
+	private MarketDataRetriever ret;
 	
 	
-	public void setRet(IMarketDataRetriever ret) {
+	public void setRet(MarketDataRetriever ret) {
 		this.ret = ret;
 	}
 	
