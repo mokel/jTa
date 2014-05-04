@@ -12,7 +12,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import fr.mokel.trade.data.MarketDataRetrieverImpl;
+import fr.mokel.trade.data.YahooDataRetriever;
 import fr.mokel.trade.indicators.Indicator;
 import fr.mokel.trade.indicators.IndicatorFactory;
 import fr.mokel.trade.model.Chart;
@@ -94,10 +94,10 @@ public class Application {
 
 
 	private void loadStockData() {
-		MarketDataRetrieverImpl ret = new MarketDataRetrieverImpl();
+		YahooDataRetriever ret = new YahooDataRetriever();
 		for (Stock s : stocks.values()) {
 			logger.info("Start download of " + s.getCode());
-			Chart c = ret.getDayData(s.getCode(), dateProcess);
+			Chart c = ret.getData(s.getCode(), dateProcess);
 			s.setBarChart(c);
 		}
 	}
@@ -124,10 +124,10 @@ public class Application {
 	class BackgroundWorkerSpot extends Thread {
 		@Override
 		public void run() {
-			MarketDataRetrieverImpl ret = new MarketDataRetrieverImpl();
+			YahooDataRetriever ret = new YahooDataRetriever();
 			for (Stock s : stocks.values()) {
 				logger.info("Start download of " + s.getCode());
-				Chart c = ret.getDayData(s.getCode(), dateProcess);
+				Chart c = ret.getData(s.getCode(), dateProcess);
 				s.setBarChart(c);
 			}
 		}

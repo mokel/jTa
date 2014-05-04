@@ -1,7 +1,7 @@
 package fr.mokel.trade.backtest;
 
-import fr.mokel.trade.data.IMarketDataRetriever;
-import fr.mokel.trade.data.MarketDataRetrieverImpl;
+import fr.mokel.trade.data.MarketDataRetriever;
+import fr.mokel.trade.data.YahooDataRetriever;
 import fr.mokel.trade.model.Chart;
 
 public class StrategyRunner {
@@ -11,7 +11,7 @@ public class StrategyRunner {
 	public static void main(String[] args) {
 
 		CCIStrategy strat = new CCIStrategy();
-		IMarketDataRetriever ret = new MarketDataRetrieverImpl();
+		MarketDataRetriever ret = new YahooDataRetriever();
 		Chart data = null;//ret.getDayData("GLE.PA");
 		strat.runBackTest(data);
 		while(strat.increseParam()) {

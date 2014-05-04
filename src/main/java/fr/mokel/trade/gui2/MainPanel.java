@@ -14,6 +14,7 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.swingx.JXTextField;
 
 import fr.mokel.trade.data.YahooDataRetriever;
+import fr.mokel.trade.gui2.components.IndicatorPanel;
 import fr.mokel.trade.gui2.util.ConstraintsBuilder;
 import fr.mokel.trade.model.WindowedList;
 
@@ -25,12 +26,17 @@ public class MainPanel extends JPanel {
 
 	private JXTextField stockField;
 	private GraphViewer graph = new GraphViewer();
+	private IndicatorPanel indicPanel = new IndicatorPanel();
 	public MainPanel() {
 		setLayout(new GridBagLayout());
 		stockField = new JXTextField("yahoo code");
 		stockField.addActionListener(new StockListener());
 		add(stockField, new ConstraintsBuilder(0,0).build());
-		add(graph, new ConstraintsBuilder(0,1).fill(GridBagConstraints.BOTH).build());
+
+		add(indicPanel, new ConstraintsBuilder(0, 1).build());
+
+		add(graph, new ConstraintsBuilder(0, 2).fill(GridBagConstraints.BOTH)
+				.build());
 	}
 	
 	class StockListener implements ActionListener, Observer {
