@@ -763,7 +763,7 @@ public class ReflectionUtils {
 		for (int i = 0; i < annotations.length; i++) {
 			System.out.println("Annotation: "
 					+ annotations[i].annotationType().getName());
-			RSwingField f = (RSwingField) annotations[i];
+			SwingField f = (SwingField) annotations[i];
 			System.out.println("order: " + f.order());
 
 			Object res = ReflectionUtils.getAnnotationPropertyValue(
@@ -774,7 +774,7 @@ public class ReflectionUtils {
 		// Get it w/o doing any work...
 		Object res = getSetterAnnotationPropertyValue(
 				"com.javasrc.rtools.swing.test.PersonProfile", "firstName",
-				"com.javasrc.rtools.swing.RSwingField", "order");
+				"com.javasrc.rtools.swing.SwingField", "order");
 		System.out.println("Order=" + res);
 
 	}
