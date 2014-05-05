@@ -12,6 +12,10 @@ import java.util.TreeMap;
 
 /**
  * A collection of reflection utility methods
+ * 
+ * {@link https://www.informit.com/guides/content.aspx?g=java&seqNum=378}
+ * 
+ * @author Steven Haines
  */
 public class ReflectionUtils {
 	/**
@@ -647,15 +651,12 @@ public class ReflectionUtils {
 	 * Builds an object with the specified class name and sets its writable
 	 * properties to the values specified in the propertyMap
 	 * 
-	 * @param className
+	 * @param c
 	 * @param propertyMap
 	 * @return
 	 */
-	public static Object buildObject(String className, Map propertyMap) {
+	public static Object buildObject(Class<?> c, Map propertyMap) {
 		try {
-			// Load the specified class
-			Class<?> c = Class.forName(className);
-
 			// Create our destination object
 			Object o = c.newInstance();
 

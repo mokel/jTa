@@ -34,6 +34,10 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
 import fr.mokel.trade.gui2.util.ConstraintsBuilder;
+import fr.mokel.trade.gui2.util.EventManager;
+import fr.mokel.trade.gui2.util.EventManager.Event;
+import fr.mokel.trade.gui2.util.EventManager.EventType;
+import fr.mokel.trade.indicator2.IndicatorType;
 import fr.mokel.trade.model.DayValue;
 import fr.mokel.trade.strategy.Run.BackTestResult;
 
@@ -95,6 +99,15 @@ public class PerformanceChart extends JPanel {
 		});
 		add(chartPanel, new ConstraintsBuilder().fillBoth().build());
 		add(info, new ConstraintsBuilder(0, 1).anchor(GridBagConstraints.WEST).build());
+
+		EventManager.addListener(EventType.IndicatorAdded, new EventManager.EventListener() {
+			@Override
+			public void eventOccured(Event e) {
+				Object[] args = e.getArgs();
+				IndicatorType i = (IndicatorType) args[0];
+				// i.getIndicator().process(data, args[1]);
+			}
+		});
 	}
 
 	public void setRange(Date begin, Date end) {

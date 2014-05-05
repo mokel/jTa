@@ -1,6 +1,7 @@
 package fr.mokel.trade.indicator2;
 
 import fr.mokel.trade.functions.Average;
+import fr.mokel.trade.gui2.util.SwingField;
 import fr.mokel.trade.model.DayValue;
 import fr.mokel.trade.model.WindowedList;
 
@@ -21,5 +22,27 @@ public class CrossMovingAverageIndicator {
 		return dv;
 	}
 
-	
+	public static class CrossMovingAverageIndicatorParams {
+		@SwingField(order = 1)
+		int averageSmall;
+		@SwingField(order = 2)
+		int averageLarge;
+
+		public int getAverageSmall() {
+			return averageSmall;
+		}
+
+		public void setAverageSmall(int averageSmall) {
+			this.averageSmall = averageSmall;
+		}
+
+		public int getAverageLarge() {
+			return averageLarge;
+		}
+
+		public void setAverageLarge(int averageLarge) {
+			this.averageLarge = averageLarge;
+		}
+
+	}
 }

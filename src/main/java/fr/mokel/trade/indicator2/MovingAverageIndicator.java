@@ -1,11 +1,12 @@
 package fr.mokel.trade.indicator2;
 
 import fr.mokel.trade.functions.Average;
+import fr.mokel.trade.gui2.util.SwingField;
 import fr.mokel.trade.model.DataWindow;
 import fr.mokel.trade.model.DayValue;
 import fr.mokel.trade.model.WindowedList;
 
-public class MovingAverageIndicator {
+public class MovingAverageIndicator implements Parameterized {
 
 	private DataWindow data;
 
@@ -29,4 +30,17 @@ public class MovingAverageIndicator {
 		this.data = data;
 	}
 
+	public static class MovingAverageIndicatorParams {
+		@SwingField(order = 1)
+		private int averageSize;
+
+		public int getAverageSize() {
+			return averageSize;
+		}
+
+		public void setAverageSize(int averageSize) {
+			this.averageSize = averageSize;
+		}
+
+	}
 }
