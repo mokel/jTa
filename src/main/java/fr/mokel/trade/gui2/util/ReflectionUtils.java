@@ -757,7 +757,7 @@ public class ReflectionUtils {
 
 	public static void main(String[] args) {
 		Annotation[] annotations = getSetterAnnotations(
-				"com.javasrc.rtools.swing.test.PersonProfile", "firstName");
+				"fr.mokel.trade.gui2.util.PersonProfile", "firstName");
 		System.out.println("Annotations for PersonProfile: "
 				+ annotations.length);
 		for (int i = 0; i < annotations.length; i++) {
