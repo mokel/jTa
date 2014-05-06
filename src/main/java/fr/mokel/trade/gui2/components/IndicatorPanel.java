@@ -26,7 +26,8 @@ public class IndicatorPanel extends JPanel {
 	JButton addButton = new JButton("add");
 
 	FormPanel paramsPanel;
-	GridBagConstraints paramsPanelConstraints = new ConstraintsBuilder(2, 0).fillBoth().build();
+	GridBagConstraints paramsPanelConstraints = new ConstraintsBuilder(2, 0).fillBoth()
+			.gridwidth(GridBagConstraints.REMAINDER).build();
 
 	public IndicatorPanel() {
 		setLayout(new GridBagLayout());

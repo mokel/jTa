@@ -33,7 +33,10 @@ public class MainPanel extends JPanel {
 		stockField.addActionListener(new StockListener());
 		add(stockField, new ConstraintsBuilder(0,0).build());
 
-		add(indicPanel, new ConstraintsBuilder(0, 1).build());
+		add(indicPanel,
+				new ConstraintsBuilder(0, 1).fill(GridBagConstraints.HORIZONTAL)
+						.gridwidth(GridBagConstraints.REMAINDER)
+				.build());
 
 		add(graph, new ConstraintsBuilder(0, 2).gridwidth(2).fill(GridBagConstraints.BOTH)
 				.build());
