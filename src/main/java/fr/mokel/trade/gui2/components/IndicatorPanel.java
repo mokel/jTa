@@ -26,7 +26,7 @@ public class IndicatorPanel extends JPanel {
 	JButton addButton = new JButton("add");
 
 	FormPanel paramsPanel;
-	GridBagConstraints paramsPanelConstraints = new ConstraintsBuilder(2, 0).fillBoth()
+	GridBagConstraints paramsPanelConstraints = new ConstraintsBuilder(2, 0, true).fillBoth()
 			.gridwidth(GridBagConstraints.REMAINDER).build();
 
 	public IndicatorPanel() {
@@ -36,9 +36,9 @@ public class IndicatorPanel extends JPanel {
 		indicModel.addElement(IndicatorType.SMA);
 		indicModel.addElement(IndicatorType.CMA);
 		indicatorCombo.setModel(indicModel);
-		add(new JLabel("Indicators: "), new ConstraintsBuilder(0, 0).build());
-		add(indicatorCombo, new ConstraintsBuilder(1, 0).build());
-		add(addButton, new ConstraintsBuilder(0, 1).anchor(GridBagConstraints.WEST).build());
+		add(new JLabel("Indicators: "), new ConstraintsBuilder(0, 0, true).build());
+		add(indicatorCombo, new ConstraintsBuilder(1, 0, true).build());
+		add(addButton, new ConstraintsBuilder(0, 1, true).anchor(GridBagConstraints.WEST).build());
 		indicatorCombo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

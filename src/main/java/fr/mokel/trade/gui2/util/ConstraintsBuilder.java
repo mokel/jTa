@@ -16,7 +16,9 @@ import java.awt.Insets;
  */
 public class ConstraintsBuilder {
 
-        private GridBagConstraints c = new GridBagConstraints();
+	private static final Insets WEST_INSETS = new Insets(0, 5, 0, 0);
+	private static final Insets EAST_INSETS = new Insets(0, 0, 0, 5);
+	private GridBagConstraints c = new GridBagConstraints();
 
         /**
          * This builder must be supplied values for gridx and gridy when it is
@@ -29,6 +31,20 @@ public class ConstraintsBuilder {
                 c.gridx = gridx;
                 c.gridy = gridy;
         }
+
+	public ConstraintsBuilder(int x, int y, boolean d) {
+		c.gridx = x;
+		c.gridy = y;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+
+		c.anchor = (x == 0) ? GridBagConstraints.WEST : GridBagConstraints.EAST;
+		c.fill = (x == 0) ? GridBagConstraints.BOTH : GridBagConstraints.HORIZONTAL;
+
+		c.insets = (x == 0) ? WEST_INSETS : EAST_INSETS;
+		c.weightx = (x == 0) ? 0.1 : 1.0;
+		c.weighty = 1.0;
+	}
 
         /**
          * 
