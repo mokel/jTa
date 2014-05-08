@@ -6,7 +6,7 @@ import fr.mokel.trade.model.DataWindow;
 import fr.mokel.trade.model.DayValue;
 import fr.mokel.trade.model.WindowedList;
 
-public class MovingAverageIndicator implements Parameterized {
+public class MovingAverageIndicator {
 
 	private DataWindow data;
 
@@ -32,7 +32,7 @@ public class MovingAverageIndicator implements Parameterized {
 
 	public static class MovingAverageIndicatorParams {
 		@SwingField(order = 1)
-		private int averageSize;
+		private int averageSize = 20;
 
 		public int getAverageSize() {
 			return averageSize;

@@ -27,8 +27,10 @@ import org.jfree.chart.axis.ExtendedCategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.entity.XYItemEntity;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
+import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYAreaRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -37,6 +39,8 @@ import fr.mokel.trade.gui2.util.ConstraintsBuilder;
 import fr.mokel.trade.gui2.util.EventManager;
 import fr.mokel.trade.gui2.util.EventManager.Event;
 import fr.mokel.trade.gui2.util.EventManager.EventType;
+import fr.mokel.trade.indicator2.IndicatorChart;
+import fr.mokel.trade.indicator2.IndicatorParameters;
 import fr.mokel.trade.indicator2.IndicatorType;
 import fr.mokel.trade.model.DayValue;
 import fr.mokel.trade.strategy.Run.BackTestResult;
@@ -53,26 +57,30 @@ public class PerformanceChart extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	/** Datenquelle */
-	private Map<String, List<DayValue>> data = new HashMap<String, List<DayValue>>();
+	private Map<IndicatorType, List<DayValue>> data = new HashMap<IndicatorType, List<DayValue>>();
 
-	private XYPlot plot;
+	private CombinedDomainXYPlot combinedPlot;
 
 	final JFreeChart chart;
 	ChartPanel chartPanel;
 	JLabel info = new JLabel("info");
 
+
 	private BackTestResult results;
 	private int index = 0;
+
+	private List<DayValue> stockData;
 
 	/**
 	 * @return a Combined Plot Graph
 	 */
 	public PerformanceChart() {
 		setLayout(new GridBagLayout());
-		plot = new XYPlot();
-		plot.setBackgroundPaint(Color.GRAY);
-		chart = new JFreeChart(plot);
+		combinedPlot = new CombinedDomainXYPlot();
+		combinedPlot.setBackgroundPaint(Color.GRAY);
+		chart = new JFreeChart(combinedPlot);
 		// set the background color for the chart...
+
 		chart.setBackgroundPaint(Color.WHITE);
 		chartPanel = new ChartPanel(chart);
 		chartPanel.addChartMouseListener(new ChartMouseListener() {
@@ -103,56 +111,66 @@ public class PerformanceChart extends JPanel {
 		EventManager.addListener(EventType.IndicatorAdded, new EventManager.EventListener() {
 			@Override
 			public void eventOccured(Event e) {
+				if (stockData != null) {
 				Object[] args = e.getArgs();
-				IndicatorType i = (IndicatorType) args[0];
-				// i.getIndicator().process(data, args[1]);
+					IndicatorType iType = (IndicatorType) args[0];
+					IndicatorParameters params = (IndicatorParameters) args[1];
+					addIndicator(iType, params);
+				}
 			}
+
 		});
 	}
 
+	protected void addIndicator(IndicatorType iType, IndicatorParameters params) {
+		XYPlot plot = new XYPlot();
+		IndicatorChart indic = params.createIndicatorInstance();
+		List<DayValue> indicChart = indic.process(stockData, params);
+		data.put(iType, indicChart);
+		TimeSeriesCollection ds = createDs(indicChart, iType.getLabel());
+		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+		renderer.setBaseShapesVisible(false);
+		// renderer.setSeriesPaint(0, Colo);
+		// renderer.setBaseToolTipGenerator(new StandardXYToolTipGenerator(
+		// StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
+		// new SimpleDateFormat("dd-MM-yyyy"), new DecimalFormat(
+		// "0,000.00")));
+		NumberAxis axis = new NumberAxis(iType.getLabel());
+		plot.setDataset(0, ds);
+		plot.setRenderer(0, renderer);
+		plot.setRangeAxis(0, axis);
+		combinedPlot.add(plot);
+		index++;
+	}
+
 	public void setRange(Date begin, Date end) {
-		DateAxis va = (DateAxis) plot.getDomainAxis();
+		DateAxis va = (DateAxis) combinedPlot.getDomainAxis();
 		va.setRange(begin, end);
 	}
 
 	public void setStock(List<DayValue> stockValues) {
+		stockData = stockValues;
+		XYPlot plot = new XYPlot();
 		DateAxis axisDate = new DateAxis("Date");
 		Font theFont = axisDate.getTickLabelFont();
 		axisDate.setTickLabelFont(new Font("Arial", Font.PLAIN, 0));
-		// axisDate.setSubLabelFont(theFont);
-		// axisDate.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI
-		// / 6.0));
-		// int freq = 1;
-		// int size = results.getStockValues().size();
-		// if (size > axisLabelThreshold) {
-		// freq = size / axisLabelThreshold + 1;
-		// }
-		// for (int i = 0; i < pDataset.getColumnCount(); i++) {
-		// if (i % freq == 0) {
-		// axisDate.addSubLabel(pDataset.getColumnKey(i),
-		// DateUtils.getShortFormat((Date) pDataset.getColumnKey(i)));
-		// }
-		// }
-		plot.setDomainAxis(axisDate);
-		TimeSeriesCollection stockDs = createDs(stockValues, "Stock");
+		combinedPlot.setDomainAxis(axisDate);
+		TimeSeriesCollection stockDs = createDs(stockData, "Stock");
 		XYAreaRenderer renderer = new XYAreaRenderer();
 		GradientPaint p = new GradientPaint(new Point(), Color.BLUE,
 				new Point(), new Color(0, 0, 0, 1));
 		p = renderer.getGradientTransformer().transform(p,
 				renderer.getBaseShape());
 		renderer.setSeriesPaint(0, p);
-		// renderer.setSeriesFillPaint(0, Color.BLUE);
-
-		// renderer.setSeriesPaint(0, Color.BLUE);
 		renderer.setBaseToolTipGenerator(new StandardXYToolTipGenerator(
 				StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
 				new SimpleDateFormat("dd-MM-yyyy"), new DecimalFormat(
 						"0,000.00")));
-		// renderer.setBaseShapesVisible(false);
 		NumberAxis axis = new NumberAxis("Stock");
 		plot.setDataset(index, stockDs);
 		plot.setRenderer(index, renderer);
 		plot.setRangeAxis(index, axis);
+		combinedPlot.add(plot);
 		index++;
 
 	}

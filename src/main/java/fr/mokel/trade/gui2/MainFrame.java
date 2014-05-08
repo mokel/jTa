@@ -21,6 +21,7 @@ public class MainFrame extends JFrame {
 		setTitle("jTa");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLayout(new GridBagLayout());
+		setLocationByPlatform(true);
 		add(new MainPanel(), new ConstraintsBuilder().fill(GridBagConstraints.BOTH).build());
 	}
 	

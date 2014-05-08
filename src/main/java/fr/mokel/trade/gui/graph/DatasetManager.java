@@ -6,7 +6,7 @@ import java.util.List;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import fr.mokel.trade.gui.graph.PerformanceChart.ChartEnum;
+import fr.mokel.trade.gui2.PerformanceChart.ChartEnum;
 import fr.mokel.trade.model.DayValue;
 
 /**

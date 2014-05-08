@@ -7,21 +7,21 @@ import java.util.Map;
 
 public class EventManager {
 
-	private static Map<EventType, List<EventListener>> eventRegistar = new HashMap<EventType, List<EventListener>>();
+	private static Map<EventType, List<EventListener>> eventRegistrar = new HashMap<EventType, List<EventListener>>();
 
 	public enum EventType {
 		IndicatorAdded
 	}
 
 	public static void addListener(EventType e, EventListener ae) {
-		if (!eventRegistar.containsKey(e)) {
-			eventRegistar.put(e, new ArrayList<EventListener>());
+		if (!eventRegistrar.containsKey(e)) {
+			eventRegistrar.put(e, new ArrayList<EventListener>());
 		}
-		eventRegistar.get(e).add(ae);
+		eventRegistrar.get(e).add(ae);
 	}
 
 	public static void fireEvent(EventType et, Object... args) {
-		List<EventListener> listeners = eventRegistar.get(et);
+		List<EventListener> listeners = eventRegistrar.get(et);
 		if(listeners != null) {
 			Event e = new Event(args);
 			for (EventListener el : listeners) {

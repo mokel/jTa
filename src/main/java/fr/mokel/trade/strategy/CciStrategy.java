@@ -1,11 +1,9 @@
 package fr.mokel.trade.strategy;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import fr.mokel.trade.functions.Average;
-import fr.mokel.trade.functions.MeanDeviation;
-import fr.mokel.trade.functions.TypicalPrice;
+import fr.mokel.trade.indicator2.CciIndicator2;
+import fr.mokel.trade.indicator2.CciIndicator2.CciIndicatorParams;
 import fr.mokel.trade.model.DayValue;
 import fr.mokel.trade.model.WindowedList;
 
@@ -13,7 +11,7 @@ public class CciStrategy extends Strategy2 {
 
 	private DayValue today;
 	private DayValue yesterday;
-
+	private List<DayValue> cci;
 	private CciParamters params ;//= new CciParamters();
 
 	@Override
@@ -63,40 +61,11 @@ public class CciStrategy extends Strategy2 {
 	int getDataWindowLength() {
 		return params.period;
 	}
-
-	private WindowedList typicalPrices;
-	private List<DayValue> typicalPricesSMA;
-	private List<DayValue> meanDeviation;
-	private List<DayValue> cci;
-
 	@Override
 	void preProcess(WindowedList list) {
-		typicalPrices = new WindowedList(new ArrayList<DayValue>());
-		TypicalPrice tp = new TypicalPrice();
-		for (DayValue dayValue : list) {
-			typicalPrices.add(tp.process(dayValue));
-		}
-		typicalPricesSMA = new ArrayList<DayValue>();
-		Average avg = new Average();
-		int sizeAvg = typicalPrices.size() - params.period;
-		for (int i = 0; i <= sizeAvg; i++) {
-			typicalPricesSMA.add(avg.process(typicalPrices.subWindow( i, i + params.period - 1)));
-		}
-		//typicalPricesSMA is smaller than typicalPrices
-		meanDeviation = new ArrayList<DayValue>();
-		MeanDeviation md = new MeanDeviation();
-		for (int i  = 0; i < typicalPricesSMA.size(); i++) {
-			DayValue value = md.process(typicalPrices.subWindow(i, i + (params.period - 1)), typicalPricesSMA.get(i));
-			meanDeviation.add(value);
-		}
-		cci = new ArrayList<DayValue>();
-		for (int i  = 0; i < typicalPricesSMA.size(); i++) {
-			if(!typicalPrices.getDate(i + params.period -1).equals(typicalPricesSMA.get(i).getDate())) {
-				throw new RuntimeException("BUG ");
-			}
-			double value = typicalPrices.getValue(i + params.period -1) - typicalPricesSMA.get(i).getValue();
-			value = value / (0.015*meanDeviation.get(i).getValue());
-			cci.add(new DayValue(value, meanDeviation.get(i).getDate()));
-		}
+		CciIndicator2 cciIndicator = new CciIndicator2();
+		CciIndicatorParams cciParams = new CciIndicatorParams();
+		cciParams.setPeriod(params.period);
+		cci = cciIndicator.process(list.getUnderlyingList(), cciParams);
 	}
 }

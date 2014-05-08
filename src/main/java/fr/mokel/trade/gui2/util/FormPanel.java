@@ -1,16 +1,17 @@
 package fr.mokel.trade.gui2.util;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Reflection-based Swing Utilities. These utility methods are used to prompt
@@ -25,7 +26,7 @@ public class FormPanel extends JPanel {
 	 * This map creates a mapping between property name and the Swing components
 	 * that implement them
 	 */
-	private Map propertyControls;
+	private Map<String, Component> propertyControls;
 
 	private Class<?> clazz;
 
@@ -33,7 +34,7 @@ public class FormPanel extends JPanel {
 		// TODO Auto-generated constructor stub
 	}
 	public FormPanel(Class<?> clazz) {
-		setLayout(new GridBagLayout());
+		setLayout(new MigLayout());
 		this.clazz = clazz;
 		buildPanel(clazz);
 	}
@@ -45,7 +46,7 @@ public class FormPanel extends JPanel {
 	 *            The class for which to build the panel
 	 * @return
 	 */
-	protected void buildPanel(Class c) {
+	protected void buildPanel(Class<?> c) {
 		// Setup our gridbag layout
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.gridwidth = 1;
@@ -53,16 +54,17 @@ public class FormPanel extends JPanel {
 		constraints.gridy = 0;
 		constraints.ipadx = 2;
 		constraints.ipady = 1;
+		constraints.anchor = GridBagConstraints.NORTHWEST;
 		int height = 0;
 
 		// Load the properties that we’re going to need to build the panel from
-		Map props = ReflectionUtils.getWriteableProperties(c);
-		this.propertyControls = new TreeMap();
+		Map<String, String> props = ReflectionUtils.getWriteableProperties(c);
+		this.propertyControls = new TreeMap<String, Component>();
 
 		// Process the properties
-		for (Iterator i = props.keySet().iterator(); i.hasNext();) {
-			String propertyName = (String) i.next();
-			String className = (String) props.get(propertyName);
+		for (Entry<String, String> entry : props.entrySet()) {
+			String propertyName = entry.getKey();
+			String className = entry.getValue();
 
 			if (ReflectionUtils.isPrimitiveType(className)) {
 				// Add Label - build it as the property name with the first
@@ -89,24 +91,26 @@ public class FormPanel extends JPanel {
 				// Build the JLabel and add it to the panel
 				JLabel label = new JLabel(sb.toString());
 				constraints.gridx = 0;
-				constraints.anchor = GridBagConstraints.NORTHEAST;
-				add(label, constraints);
+				constraints.weightx = 0;
+				constraints.fill = GridBagConstraints.NONE;
+				add(label);
 
 				// Handle the Swing component
 				constraints.gridx = 1;
-				constraints.anchor = GridBagConstraints.NORTHWEST;
+				constraints.weightx = 1;
+				constraints.fill = GridBagConstraints.HORIZONTAL;
 				if (className.equals("boolean")
 						|| className.equals("java.lang.Boolean")) {
 					// Booleans are treated as checkboxes
 					JCheckBox checkbox = new JCheckBox();
 					propertyControls.put(propertyName, checkbox);
-					add(checkbox, constraints);
+					add(checkbox, "wrap");
 				} else {
 					// All of the rest of the primitive types are handled as
 					// String fields
 					JTextField textField = new JTextField();
 					propertyControls.put(propertyName, textField);
-					add(textField, constraints);
+					add(textField, "wrap, w 50!");
 				}
 
 				// Increment the height of the panel so that we can display the
@@ -120,7 +124,7 @@ public class FormPanel extends JPanel {
 		}
 
 		// Return the panel that we created
-		setSize(400, height);
+		//setSize(400, height);
 	}
 
 	/**
@@ -144,13 +148,11 @@ public class FormPanel extends JPanel {
 		// dlg.setVisible(true);
 
 		// Build a property map
-		Map propertyMap = new TreeMap();
-		for (Iterator i = this.propertyControls.keySet().iterator(); i
-				.hasNext();) {
-			String propertyName = (String) i.next();
+		Map<String, String> propertyMap = new TreeMap<String, String>();
+		for (Entry<String, Component> entry : propertyControls.entrySet()) {
+			String propertyName = entry.getKey();
 			String propertyValue = null;
-			JComponent component = (JComponent) this.propertyControls
-					.get(propertyName);
+			Component component = entry.getValue();
 			if (component instanceof JTextField) {
 				propertyValue = ((JTextField) component).getText();
 			} else if (component instanceof JCheckBox) {

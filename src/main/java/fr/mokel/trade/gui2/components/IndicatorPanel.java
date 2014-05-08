@@ -1,9 +1,6 @@
 package fr.mokel.trade.gui2.components;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,6 +10,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
 import fr.mokel.trade.gui2.util.ConstraintsBuilder;
 import fr.mokel.trade.gui2.util.EventManager;
 import fr.mokel.trade.gui2.util.EventManager.EventType;
@@ -25,20 +23,29 @@ public class IndicatorPanel extends JPanel {
 
 	JButton addButton = new JButton("add");
 
+	JPanel containerPanel;
 	FormPanel paramsPanel;
 	GridBagConstraints paramsPanelConstraints = new ConstraintsBuilder(2, 0, true).fillBoth()
 			.gridwidth(GridBagConstraints.REMAINDER).build();
 
 	public IndicatorPanel() {
-		setLayout(new GridBagLayout());
+		setLayout(new MigLayout());
 		indicatorCombo = new JComboBox<IndicatorType>();
 		DefaultComboBoxModel<IndicatorType> indicModel = new DefaultComboBoxModel<IndicatorType>();
 		indicModel.addElement(IndicatorType.SMA);
 		indicModel.addElement(IndicatorType.CMA);
+		indicModel.addElement(IndicatorType.CCI);
 		indicatorCombo.setModel(indicModel);
-		add(new JLabel("Indicators: "), new ConstraintsBuilder(0, 0, true).build());
-		add(indicatorCombo, new ConstraintsBuilder(1, 0, true).build());
-		add(addButton, new ConstraintsBuilder(0, 1, true).anchor(GridBagConstraints.WEST).build());
+		add(new JLabel("Indicators: "));
+		add(indicatorCombo);
+		// add dummy panel
+		containerPanel = new JPanel();
+		containerPanel.setLayout(new MigLayout());
+		paramsPanel = new FormPanel();
+		containerPanel.add(paramsPanel);
+		add(containerPanel, "wrap");
+		
+		add(addButton);
 		indicatorCombo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -49,23 +56,16 @@ public class IndicatorPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Object params = paramsPanel.getObject();
-				EventManager.fireEvent(EventType.IndicatorAdded, params);
+				EventManager.fireEvent(EventType.IndicatorAdded,
+						(IndicatorType) indicatorCombo.getSelectedItem(), params);
 			}
 		});
-		// add dummy panel
-		paramsPanel = new FormPanel();
-		paramsPanel.setBackground(Color.RED);
-		add(paramsPanel, paramsPanelConstraints);
-		setBackground(Color.ORANGE);
-		paramsPanel.setPreferredSize(new Dimension(50, 50));
 	}
 
 	private void loadParamsPanel(IndicatorType selectedIndic) {
-		if (paramsPanel != null) {
-			remove(paramsPanel);
-		}
+		containerPanel.remove(paramsPanel);
 		paramsPanel = new FormPanel(selectedIndic.getClazz());
-		add(paramsPanel, paramsPanelConstraints);
-		validate();
+		containerPanel.add(paramsPanel);
+		getParent().validate();
 	}
 }
