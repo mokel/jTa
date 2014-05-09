@@ -1,7 +1,6 @@
 package fr.mokel.trade.gui2.util;
 
 import java.awt.Component;
-import java.awt.GridBagConstraints;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -34,7 +33,7 @@ public class FormPanel extends JPanel {
 		// TODO Auto-generated constructor stub
 	}
 	public FormPanel(Class<?> clazz) {
-		setLayout(new MigLayout());
+		setLayout(new MigLayout("insets 0"));
 		this.clazz = clazz;
 		buildPanel(clazz);
 	}
@@ -48,14 +47,6 @@ public class FormPanel extends JPanel {
 	 */
 	protected void buildPanel(Class<?> c) {
 		// Setup our gridbag layout
-		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.gridwidth = 1;
-		constraints.gridheight = 1;
-		constraints.gridy = 0;
-		constraints.ipadx = 2;
-		constraints.ipady = 1;
-		constraints.anchor = GridBagConstraints.NORTHWEST;
-		int height = 0;
 
 		// Load the properties that we’re going to need to build the panel from
 		Map<String, String> props = ReflectionUtils.getWriteableProperties(c);
@@ -90,15 +81,9 @@ public class FormPanel extends JPanel {
 				sb.append(":");
 				// Build the JLabel and add it to the panel
 				JLabel label = new JLabel(sb.toString());
-				constraints.gridx = 0;
-				constraints.weightx = 0;
-				constraints.fill = GridBagConstraints.NONE;
 				add(label);
 
 				// Handle the Swing component
-				constraints.gridx = 1;
-				constraints.weightx = 1;
-				constraints.fill = GridBagConstraints.HORIZONTAL;
 				if (className.equals("boolean")
 						|| className.equals("java.lang.Boolean")) {
 					// Booleans are treated as checkboxes
@@ -116,11 +101,9 @@ public class FormPanel extends JPanel {
 				// Increment the height of the panel so that we can display the
 				// corresponding
 				// dialog appropriately
-				height += 30;
 			}
 
 			// Increment the gridy
-			constraints.gridy++;
 		}
 
 		// Return the panel that we created

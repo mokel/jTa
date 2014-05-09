@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
+import fr.mokel.trade.gui2.MainFrame;
 import fr.mokel.trade.gui2.util.ConstraintsBuilder;
 import fr.mokel.trade.gui2.util.EventManager;
 import fr.mokel.trade.gui2.util.EventManager.EventType;
@@ -29,22 +30,21 @@ public class IndicatorPanel extends JPanel {
 			.gridwidth(GridBagConstraints.REMAINDER).build();
 
 	public IndicatorPanel() {
-		setLayout(new MigLayout());
+		setLayout(new MigLayout("insets 0", "left", "top"));
 		indicatorCombo = new JComboBox<IndicatorType>();
 		DefaultComboBoxModel<IndicatorType> indicModel = new DefaultComboBoxModel<IndicatorType>();
 		indicModel.addElement(IndicatorType.SMA);
 		indicModel.addElement(IndicatorType.CMA);
 		indicModel.addElement(IndicatorType.CCI);
 		indicatorCombo.setModel(indicModel);
-		add(new JLabel("Indicators: "));
+		add(new JLabel("Indicators: "), "gaptop 3");
 		add(indicatorCombo);
 		// add dummy panel
 		containerPanel = new JPanel();
-		containerPanel.setLayout(new MigLayout());
+		containerPanel.setLayout(new MigLayout("insets 0"));
 		paramsPanel = new FormPanel();
 		containerPanel.add(paramsPanel);
 		add(containerPanel, "wrap");
-		
 		add(addButton);
 		indicatorCombo.addActionListener(new ActionListener() {
 			@Override
@@ -66,6 +66,6 @@ public class IndicatorPanel extends JPanel {
 		containerPanel.remove(paramsPanel);
 		paramsPanel = new FormPanel(selectedIndic.getClazz());
 		containerPanel.add(paramsPanel);
-		getParent().validate();
+		MainFrame.INTANCE.pack();
 	}
 }

@@ -1,7 +1,5 @@
 package fr.mokel.trade.gui2;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
@@ -12,10 +10,11 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.apache.commons.lang.time.DateUtils;
 import org.jdesktop.swingx.JXDatePicker;
 
-import fr.mokel.trade.gui2.util.ConstraintsBuilder;
 import fr.mokel.trade.model.DayValue;
 
 public class GraphViewer extends JPanel {
@@ -26,16 +25,17 @@ public class GraphViewer extends JPanel {
 	private JXDatePicker toDatePicker = new JXDatePicker();
 	
 	public GraphViewer() {
-		setLayout(new GridBagLayout());
+		setLayout(new MigLayout());
 		fromDatePicker.addMouseWheelListener(new MouseWheelDateListener());
 		fromDatePicker.addActionListener(new ActionDateListener());
 		toDatePicker.addMouseWheelListener(new MouseWheelDateListener());
-		add(new JLabel("From: "), new ConstraintsBuilder(0,0).build());
-		add(fromDatePicker, new ConstraintsBuilder(1,0).build());
-		add(new JLabel("To: "), new ConstraintsBuilder(0,1).build());
-		add(toDatePicker, new ConstraintsBuilder(1,1).build());
+		toDatePicker.addActionListener(new ActionDateListener());
+		add(new JLabel("From: "));
+		add(fromDatePicker);
+		add(new JLabel("To: "), "gapleft 20");
+		add(toDatePicker, "wrap");
 		chart = new PerformanceChart();
-		add(chart, new ConstraintsBuilder(0,2).fill(GridBagConstraints.BOTH).gridwidth(2).build());
+		add(chart, "dock south, grow");
 	}
 
 	private void updateChartRange() {

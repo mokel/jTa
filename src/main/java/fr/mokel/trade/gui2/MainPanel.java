@@ -1,15 +1,17 @@
 package fr.mokel.trade.gui2;
 
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXTextField;
 
@@ -29,18 +31,13 @@ public class MainPanel extends JPanel {
 	private IndicatorPanel indicPanel = new IndicatorPanel();
 
 	public MainPanel() {
-		setLayout(new GridBagLayout());
+		setLayout(new MigLayout());
 		stockField = new JXTextField("yahoo code");
 		stockField.addActionListener(new StockListener());
-		add(stockField, new ConstraintsBuilder(0,0).build());
-		//
-		// add(indicPanel,
-		// new ConstraintsBuilder(0, 1).fill(GridBagConstraints.HORIZONTAL)
-		// .gridwidth(GridBagConstraints.REMAINDER)
-		// .build());
-
+		add(new JLabel("Yahoo stock code:"));
+		add(stockField, "wrap");
 		add(indicPanel, new ConstraintsBuilder(0, 1, true).build());
-		add(graph, new ConstraintsBuilder(0, 2).gridwidth(2).fill(GridBagConstraints.BOTH)
+		add(graph, new ConstraintsBuilder(0, 2, true).gridwidth(2).fill(GridBagConstraints.BOTH)
 				.build());
 	}
 	
