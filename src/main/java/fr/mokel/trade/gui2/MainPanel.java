@@ -1,6 +1,5 @@
 package fr.mokel.trade.gui2;
 
-import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
@@ -17,7 +16,6 @@ import org.jdesktop.swingx.JXTextField;
 
 import fr.mokel.trade.data.YahooDataRetriever;
 import fr.mokel.trade.gui2.components.IndicatorPanel;
-import fr.mokel.trade.gui2.util.ConstraintsBuilder;
 import fr.mokel.trade.model.WindowedList;
 
 /**
@@ -36,9 +34,8 @@ public class MainPanel extends JPanel {
 		stockField.addActionListener(new StockListener());
 		add(new JLabel("Yahoo stock code:"));
 		add(stockField, "wrap");
-		add(indicPanel, new ConstraintsBuilder(0, 1, true).build());
-		add(graph, new ConstraintsBuilder(0, 2, true).gridwidth(2).fill(GridBagConstraints.BOTH)
-				.build());
+		add(indicPanel, "wrap, span 2");
+		add(graph, "dock south");
 	}
 	
 	class StockListener implements ActionListener, Observer {

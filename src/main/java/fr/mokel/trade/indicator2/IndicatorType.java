@@ -7,16 +7,21 @@ import fr.mokel.trade.indicator2.MovingAverageIndicator.MovingAverageIndicatorPa
 public enum IndicatorType {
 
 	// sformatter:off
-	SMA("Moving Avg", MovingAverageIndicatorParams.class), CMA("Cross Moving Avg",
-			CrossMovingAverageIndicatorParams.class),
-	CCI("CCI", CciIndicatorParams.class);
+	SMA("Moving Avg", MovingAverageIndicatorParams.class, true, false), CMA("Cross Moving Avg",
+			CrossMovingAverageIndicatorParams.class, false, false),
+	CCI("CCI", CciIndicatorParams.class, false, false);
 	// @formatter:on
 	
-	private IndicatorType(String label, Class<?> clazz) {
+	private boolean onStockChart;
+
+	private IndicatorType(String label, Class<?> clazz, boolean onStockChart, boolean needRangeAxis) {
+		this.onStockChart = onStockChart;
+		this.needRangeAxis = needRangeAxis;
 		this.label = label;
 		this.clazz = clazz;
 	}
 
+	private boolean needRangeAxis;
 	private String label;
 	private Class<?> clazz;
 
@@ -28,8 +33,12 @@ public enum IndicatorType {
 		return clazz;
 	}
 
-	public IndicatorChart getIndicator() {
-		return clazz.newInstance();
+	public boolean isOnStockChart() {
+		return onStockChart;
+	}
+
+	public boolean isNeedRangeAxis() {
+		return needRangeAxis;
 	}
 
 	@Override

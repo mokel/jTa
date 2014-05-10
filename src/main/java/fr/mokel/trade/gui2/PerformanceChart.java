@@ -59,6 +59,7 @@ public class PerformanceChart extends JPanel {
 	/** Datenquelle */
 	private Map<IndicatorType, List<DayValue>> data = new HashMap<IndicatorType, List<DayValue>>();
 
+	private XYPlot stockPlot;
 	private CombinedDomainXYPlot combinedPlot;
 
 	final JFreeChart chart;
@@ -77,7 +78,6 @@ public class PerformanceChart extends JPanel {
 	public PerformanceChart() {
 		setLayout(new GridBagLayout());
 		combinedPlot = new CombinedDomainXYPlot();
-		combinedPlot.setBackgroundPaint(Color.GRAY);
 		chart = new JFreeChart(combinedPlot);
 		// set the background color for the chart...
 
@@ -139,8 +139,28 @@ public class PerformanceChart extends JPanel {
 		plot.setDataset(0, ds);
 		plot.setRenderer(0, renderer);
 		plot.setRangeAxis(0, axis);
+		plot.setBackgroundPaint(Color.GRAY);
 		combinedPlot.add(plot);
-		index++;
+	}
+
+	protected void addIndicatorOnStockChart(IndicatorType iType, IndicatorParameters params) {
+		IndicatorChart indic = params.createIndicatorInstance();
+		List<DayValue> indicChart = indic.process(stockData, params);
+		data.put(iType, indicChart);
+		TimeSeriesCollection ds = createDs(indicChart, iType.getLabel());
+		XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+		renderer.setBaseShapesVisible(false);
+		// renderer.setSeriesPaint(0, Colo);
+		// renderer.setBaseToolTipGenerator(new StandardXYToolTipGenerator(
+		// StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
+		// new SimpleDateFormat("dd-MM-yyyy"), new DecimalFormat(
+		// "0,000.00")));
+		NumberAxis axis = new NumberAxis(iType.getLabel());
+		stockPlot.setDataset(0, ds);
+		stockPlot.setRenderer(0, renderer);
+		stockPlot.setRangeAxis(0, axis);
+		stockPlot.setBackgroundPaint(Color.GRAY);
+		combinedPlot.add(stockPlot);
 	}
 
 	public void setRange(Date begin, Date end) {
@@ -150,7 +170,7 @@ public class PerformanceChart extends JPanel {
 
 	public void setStock(List<DayValue> stockValues) {
 		stockData = stockValues;
-		XYPlot plot = new XYPlot();
+		stockPlot = new XYPlot();
 		DateAxis axisDate = new DateAxis("Date");
 		Font theFont = axisDate.getTickLabelFont();
 		axisDate.setTickLabelFont(new Font("Arial", Font.PLAIN, 0));
@@ -158,7 +178,7 @@ public class PerformanceChart extends JPanel {
 		TimeSeriesCollection stockDs = createDs(stockData, "Stock");
 		XYAreaRenderer renderer = new XYAreaRenderer();
 		GradientPaint p = new GradientPaint(new Point(), Color.BLUE,
-				new Point(), new Color(0, 0, 0, 1));
+				new Point(), new Color(0, 137, 255, 30));
 		p = renderer.getGradientTransformer().transform(p,
 				renderer.getBaseShape());
 		renderer.setSeriesPaint(0, p);
@@ -167,12 +187,12 @@ public class PerformanceChart extends JPanel {
 				new SimpleDateFormat("dd-MM-yyyy"), new DecimalFormat(
 						"0,000.00")));
 		NumberAxis axis = new NumberAxis("Stock");
-		plot.setDataset(index, stockDs);
-		plot.setRenderer(index, renderer);
-		plot.setRangeAxis(index, axis);
-		combinedPlot.add(plot);
+		stockPlot.setDataset(index, stockDs);
+		stockPlot.setRenderer(index, renderer);
+		stockPlot.setRangeAxis(index, axis);
+		stockPlot.setBackgroundPaint(Color.GRAY);
+		combinedPlot.add(stockPlot, 3);
 		index++;
-
 	}
 
 	public void setData(BackTestResult res) {
