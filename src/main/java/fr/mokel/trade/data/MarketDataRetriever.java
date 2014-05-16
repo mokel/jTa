@@ -2,10 +2,11 @@ package fr.mokel.trade.data;
 
 
 import java.time.LocalDate;
+import java.util.List;
 
-import fr.mokel.trade.model.WindowedList;
+import fr.mokel.trade.model.DayValue;
 
 public interface MarketDataRetriever {
 
-	WindowedList getData(String code, LocalDate date);
+	List<DayValue> getData(String code, LocalDate date);
 }

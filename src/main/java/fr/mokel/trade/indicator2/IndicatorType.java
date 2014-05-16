@@ -7,6 +7,7 @@ import fr.mokel.trade.indicator2.MovingAverageIndicator.MovingAverageIndicatorPa
 public enum IndicatorType {
 
 	// sformatter:off
+	None("", null, false, false),
 	SMA("Moving Avg", MovingAverageIndicatorParams.class, true, false), CMA("Cross Moving Avg",
 			CrossMovingAverageIndicatorParams.class, false, false),
 	CCI("CCI", CciIndicatorParams.class, false, false);

@@ -33,6 +33,7 @@ public class IndicatorPanel extends JPanel {
 		setLayout(new MigLayout("insets 0", "left", "top"));
 		indicatorCombo = new JComboBox<IndicatorType>();
 		DefaultComboBoxModel<IndicatorType> indicModel = new DefaultComboBoxModel<IndicatorType>();
+		indicModel.addElement(IndicatorType.None);
 		indicModel.addElement(IndicatorType.SMA);
 		indicModel.addElement(IndicatorType.CMA);
 		indicModel.addElement(IndicatorType.CCI);

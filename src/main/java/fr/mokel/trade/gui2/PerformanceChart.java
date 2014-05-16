@@ -136,6 +136,7 @@ public class PerformanceChart extends JPanel {
 		// new SimpleDateFormat("dd-MM-yyyy"), new DecimalFormat(
 		// "0,000.00")));
 		NumberAxis axis = new NumberAxis(iType.getLabel());
+		axis.setAutoRangeIncludesZero(false);
 		plot.setDataset(0, ds);
 		plot.setRenderer(0, renderer);
 		plot.setRangeAxis(0, axis);
@@ -187,6 +188,7 @@ public class PerformanceChart extends JPanel {
 				new SimpleDateFormat("dd-MM-yyyy"), new DecimalFormat(
 						"0,000.00")));
 		NumberAxis axis = new NumberAxis("Stock");
+		axis.setAutoRangeIncludesZero(false);
 		stockPlot.setDataset(index, stockDs);
 		stockPlot.setRenderer(index, renderer);
 		stockPlot.setRangeAxis(index, axis);

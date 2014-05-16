@@ -3,6 +3,7 @@ package fr.mokel.trade.gui2;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -16,7 +17,7 @@ import org.jdesktop.swingx.JXTextField;
 
 import fr.mokel.trade.data.YahooDataRetriever;
 import fr.mokel.trade.gui2.components.IndicatorPanel;
-import fr.mokel.trade.model.WindowedList;
+import fr.mokel.trade.model.DayValue;
 
 /**
  * @author vincent.mokel
@@ -49,11 +50,11 @@ public class MainPanel extends JPanel {
 
 		@Override
 		public void update(Observable obs, Object value) {
-			WindowedList list = (WindowedList) value;
+			List<DayValue> list = (List<DayValue>) value;
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					graph.setStock(list.getUnderlyingList());
+					graph.setStock(list);
 				}
 			});
 		}

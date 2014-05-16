@@ -1,5 +1,6 @@
 package fr.mokel.trade.model;
 
+import java.util.List;
 import java.util.Observable;
 
 
@@ -7,11 +8,8 @@ public class Stock extends Observable {
 
 	private String code;
 	private Chart barChart;
-	private DataWindow data;
-	private WindowedList list;
-//	
-//	private List<Indicator> strategies;
-//	private Integer status;
+	private List<DayValue> list;
+
 
 	public Stock(String code) {
 		this.code = code;
@@ -48,19 +46,12 @@ public class Stock extends Observable {
 //		this.status = status;
 //	}
 
-	public DataWindow getData() {
-		return data;
-	}
 
-	public void setData(DataWindow data) {
-		this.data = data;
-	}
-
-	public WindowedList getList() {
+	public List<DayValue> getList() {
 		return list;
 	}
 
-	public void setList(WindowedList list) {
+	public void setList(List<DayValue> list) {
 		this.list = list;
 	}
 

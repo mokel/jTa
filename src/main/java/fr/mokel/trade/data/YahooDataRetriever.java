@@ -24,12 +24,12 @@ import au.com.bytecode.opencsv.CSVWriter;
 import au.com.bytecode.opencsv.bean.CsvToBean;
 import au.com.bytecode.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 import fr.mokel.trade.model.BarChartData;
-import fr.mokel.trade.model.WindowedList;
+import fr.mokel.trade.model.DayValue;
 
 public class YahooDataRetriever extends Observable implements
 		MarketDataRetriever {
 
-	private static final int DEFAULT_LENGTH = 24;
+	private static final int DEFAULT_LENGTH = 28;
 
 	private int nbMonth = DEFAULT_LENGTH;
 
@@ -54,7 +54,7 @@ public class YahooDataRetriever extends Observable implements
 		Runnable run = new Runnable() {
 			@Override
 			public void run() {
-				WindowedList result = getData(code, date);
+				List<DayValue> result = getData(code, date);
 				setChanged();
 				notifyObservers(result);
 			}
@@ -63,7 +63,7 @@ public class YahooDataRetriever extends Observable implements
 		t.start();
 	}
 
-	public WindowedList getData(String code, LocalDate date) {
+	public List<DayValue> getData(String code, LocalDate date) {
 		CSVReader read = null;
 		File csv = new File(createFileName(code, date));
 		if (csv.canRead()) {
@@ -114,8 +114,20 @@ public class YahooDataRetriever extends Observable implements
 			writeCsv(code, list, date);
 		}
 		list = reverseList(list);
-		WindowedList wlist = new WindowedList(list,"");
-		return wlist;
+		return convert(list);
+	}
+
+	private List<DayValue> convert(List<BarChartData> list) {
+		List<DayValue> data = new ArrayList<DayValue>();
+		for (BarChartData chartData : list) {
+			DayValue dv = new DayValue(chartData.getAdjClose(),
+					chartData.getDate());
+			dv.setHigh(chartData.getHigh());
+			dv.setLow(chartData.getLow());
+			dv.setClose(chartData.getClose());
+			data.add(dv);
+		}
+		return data;
 	}
 
 	private String createUrl(String code, LocalDate date) {
